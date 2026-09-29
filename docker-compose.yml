@@ -1,0 +1,9 @@
+services:
+  bank-tool:
+    build: .
+    container_name: bank-tool
+    ports:
+      - "3010:3010"
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped

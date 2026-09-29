@@ -1,0 +1,167 @@
+/* ===== 主题：私人理财工作室 — 暖纸底 / 墨蓝主色 / 琥珀 AI 强调 ===== */
+:root {
+  --ink: #1c2530;            /* 主文字 */
+  --ink-2: #5d6b7a;          /* 次级文字 */
+  --ink-3: #98a4b0;          /* 弱文字 */
+  --primary: #1f3a5f;        /* 墨蓝 */
+  --primary-soft: #ebeef3;
+  --amber: #b45309;          /* AI / OCR 强调 */
+  --amber-soft: #fdf3e3;
+  --paper: #f6f4ef;          /* 页面底色 */
+  --card: #ffffff;
+  --line: #e8e4db;
+  --green: #1b7a43;
+  --red: #b42318;
+
+  --van-primary-color: var(--primary);
+  --van-cell-background: transparent;
+  --van-field-input-text-color: var(--ink);
+  --van-nav-bar-background: var(--paper);
+  --van-nav-bar-title-text-color: var(--ink);
+  --van-nav-bar-text-color: var(--primary);
+  --van-nav-bar-arrow-left-text-color: var(--ink);
+  --van-tabbar-background: #fffdf9;
+  --van-search-background: var(--paper);
+}
+
+html {
+  background: var(--paper);
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  margin: 0;
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'HarmonyOS Sans SC', 'MiSans', 'Microsoft YaHei', sans-serif;
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+#app { min-height: 100vh; }
+
+/* ===== 布局 ===== */
+.page {
+  padding: 12px 14px 24px;
+  max-width: 780px;
+  margin: 0 auto;
+}
+.page-wide {
+  padding: 12px 16px 24px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.nav-plain .van-nav-bar__title { font-weight: 700; letter-spacing: 0.02em; }
+
+/* ===== 卡片（少嵌套、细线分隔）===== */
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+}
+.card-tight { padding: 10px 14px; }
+
+.section-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-2);
+  letter-spacing: 0.08em;
+  margin: 18px 2px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.section-title .link { color: var(--primary); font-weight: 500; cursor: pointer; }
+
+/* ===== 数字排版 ===== */
+.num {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum';
+  letter-spacing: -0.01em;
+}
+.amount { font-variant-numeric: tabular-nums; font-weight: 700; color: var(--primary); }
+.amount-lg { font-size: 26px; }
+.amount-sm { font-weight: 600; font-size: 14px; }
+
+/* ===== 标签 ===== */
+.tag-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  background: var(--primary-soft);
+  color: var(--primary);
+  margin: 2px 4px 2px 0;
+  line-height: 20px;
+}
+.tag-chip.amber { background: var(--amber-soft); color: var(--amber); }
+.tag-chip.plain { background: #f0eee8; color: var(--ink-2); }
+
+/* ===== 空状态 ===== */
+.empty {
+  text-align: center;
+  color: var(--ink-3);
+  padding: 42px 20px;
+  font-size: 14px;
+}
+.empty .van-icon { font-size: 34px; display: block; margin-bottom: 10px; }
+
+/* ===== 通用工具 ===== */
+.row { display: flex; align-items: center; gap: 8px; }
+.row-between { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.grow { flex: 1; min-width: 0; }
+.ellipsis { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.muted { color: var(--ink-2); font-size: 13px; }
+.faint { color: var(--ink-3); font-size: 12px; }
+
+/* 宽屏表格 */
+.table-wrap { overflow-x: auto; }
+.data-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+.data-table th {
+  text-align: left;
+  font-weight: 600;
+  color: var(--ink-2);
+  padding: 8px 10px;
+  border-bottom: 1.5px solid var(--line);
+  white-space: nowrap;
+}
+.data-table td { padding: 9px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.data-table td.num, .data-table th.num { text-align: right; }
+.data-table tr:active td { background: #faf8f3; }
+
+/* 分类占比条 */
+.cat-bar { height: 8px; border-radius: 4px; background: var(--primary-soft); overflow: hidden; }
+.cat-bar > i { display: block; height: 100%; border-radius: 4px; background: var(--primary); }
+
+/* ===== Markdown 报告样式 ===== */
+.markdown-body { font-size: 14.5px; line-height: 1.75; word-break: break-word; }
+.markdown-body h1, .markdown-body h2, .markdown-body h3, .markdown-body h4 {
+  color: var(--ink);
+  line-height: 1.4;
+  margin: 1.1em 0 0.5em;
+}
+.markdown-body h1 { font-size: 18px; }
+.markdown-body h2 { font-size: 16.5px; padding-left: 9px; border-left: 3px solid var(--primary); }
+.markdown-body h3 { font-size: 15px; }
+.markdown-body p { margin: 0.5em 0; }
+.markdown-body ul, .markdown-body ol { padding-left: 1.3em; margin: 0.5em 0; }
+.markdown-body li { margin: 0.25em 0; }
+.markdown-body strong { color: var(--primary); }
+.markdown-body blockquote {
+  margin: 0.8em 0;
+  padding: 6px 12px;
+  background: var(--amber-soft);
+  border-radius: 8px;
+  color: var(--amber);
+  font-size: 13px;
+}
+.markdown-body table { border-collapse: collapse; margin: 0.8em 0; width: 100%; font-size: 13px; }
+.markdown-body th, .markdown-body td { border: 1px solid var(--line); padding: 5px 9px; text-align: left; }
+.markdown-body th { background: #faf8f3; }
+.markdown-body code { background: #f0eee8; border-radius: 4px; padding: 1px 5px; font-size: 13px; }
+.markdown-body hr { border: none; border-top: 1px solid var(--line); margin: 1em 0; }
+
+/* 顶部安全区 */
+.safe-top { padding-top: env(safe-area-inset-top); }
