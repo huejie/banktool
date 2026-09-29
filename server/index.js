@@ -10,11 +10,16 @@ import { analysisRouter } from './routes/analysis.js';
 import { settingsRouter } from './routes/settings.js';
 import { chatRouter } from './routes/chat.js';
 import { productsRouter } from './routes/products.js';
+import { authRouter, requireAuth } from './routes/auth.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
 app.disable('x-powered-by');
 app.use(express.json({ limit: '5mb' }));
+
+// 登录/鉴权（auth 路由自身不需要登录）
+app.use('/api/auth', authRouter);
+app.use('/api', requireAuth);
 
 app.get('/api/health', (_req, res) => res.json({ ok: true }));
 app.use('/api/customers', customersRouter);
@@ -24,7 +29,7 @@ app.use('/api/analysis', analysisRouter);
 app.use('/api/settings', settingsRouter);
 app.use('/api/chat', chatRouter);
 app.use('/api/products', productsRouter);
-app.use('/uploads', express.static(UPLOAD_DIR, { maxAge: '30d' }));
+app.use('/uploads', requireAuth, express.static(UPLOAD_DIR, { maxAge: '30d' }));
 
 // 生产模式：托管前端构建产物（SPA 回退到 index.html）
 const distDir = path.resolve(__dirname, '../web/dist');

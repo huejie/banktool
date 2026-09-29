@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
 const routes = [
+  { path: '/login', name: 'login', component: () => import('../views/Login.vue'), meta: { title: '登录' } },
   { path: '/', name: 'customers', component: () => import('../views/CustomerList.vue'), meta: { tab: 'customers', title: '客户' } },
   { path: '/table', name: 'table', component: () => import('../views/AssetTable.vue'), meta: { tab: 'table', title: '资产表格' } },
   { path: '/ocr', name: 'ocr', component: () => import('../views/OcrCapture.vue'), meta: { title: '拍照识别' } },

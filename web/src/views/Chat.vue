@@ -233,6 +233,10 @@ async function send() {
       match: linkMode.value === 'auto',
     });
     if (!res.ok || !res.body) {
+      if (res.status === 401) {
+        location.href = '/login';
+        throw new Error('登录已过期');
+      }
       let msg = `请求失败（${res.status}）`;
       try {
         const j = await res.json();

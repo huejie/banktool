@@ -38,6 +38,18 @@
         <van-switch :model-value="form.mask_enabled" @update:model-value="form.mask_enabled = $event" size="20px" />
       </div>
 
+      <!-- 访问密码 -->
+      <div class="section-title"><span>访问密码</span></div>
+      <div class="card" style="padding: 6px 14px 12px">
+        <div class="faint" style="padding: 10px 16px 0">公网部署建议设置；每台设备登录一次，30 天免登录</div>
+        <van-field v-model="pwOld" type="password" label="原密码" placeholder="输入原密码" />
+        <van-field v-model="pwNew" type="password" label="新密码" placeholder="至少 4 位" />
+        <div class="row" style="gap: 10px; padding: 10px 16px 0">
+          <van-button size="small" round plain type="primary" style="flex: 1" :loading="changingPw" @click="changePassword">修改密码</van-button>
+          <van-button size="small" round plain style="flex: 1; color: var(--ink-2); border-color: var(--line)" @click="logout">退出登录</van-button>
+        </div>
+      </div>
+
       <!-- 数据说明 -->
       <div class="card">
         <div style="font-weight: 600; font-size: 14px; margin-bottom: 6px">数据存储</div>
@@ -62,6 +74,33 @@ const form = reactive({ api_key: '', ocr_model: '', analysis_model: '', base_url
 const showKey = ref(false);
 const saving = ref(false);
 const testing = ref(false);
+const pwOld = ref('');
+const pwNew = ref('');
+const changingPw = ref(false);
+
+async function changePassword() {
+  if (!pwNew.value.trim() || pwNew.value.trim().length < 4) {
+    showToast('新密码至少 4 位');
+    return;
+  }
+  changingPw.value = true;
+  try {
+    await api.authChange(pwOld.value.trim(), pwNew.value.trim());
+    showToast('密码已修改，下次登录使用新密码');
+    pwOld.value = '';
+    pwNew.value = '';
+  } catch (e) {
+    showToast(e.message);
+  } finally {
+    changingPw.value = false;
+  }
+}
+
+function logout() {
+  api.authLogout().finally(() => {
+    location.href = '/login';
+  });
+}
 
 async function load() {
   const s = await api.getSettings();

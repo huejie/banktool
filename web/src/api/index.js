@@ -1,5 +1,12 @@
 async function request(url, options = {}) {
   const res = await fetch(url, options);
+  if (res.status === 401 && !url.startsWith('/api/auth/')) {
+    // 登录过期：跳登录页（保持来源，登录后回到当前页）
+    if (!location.pathname.startsWith('/login')) {
+      location.href = '/login';
+    }
+    throw new Error('未登录或登录已过期');
+  }
   if (!res.ok) {
     let msg = `请求失败（${res.status}）`;
     try {
@@ -62,6 +69,10 @@ export const api = {
   createProduct: (data) => request('/api/products', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) }),
   updateProduct: (id, data) => request(`/api/products/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) }),
   deleteProduct: (id) => request(`/api/products/${id}`, { method: 'DELETE' }),
+
+  // 访问密码
+  authChange: (old_password, new_password) => request('/api/auth/change', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ old_password, new_password }) }),
+  authLogout: () => request('/api/auth/logout', { method: 'POST' }),
 
   // 设置
   getSettings: () => request('/api/settings'),
