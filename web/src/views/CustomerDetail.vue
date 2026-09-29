@@ -41,7 +41,7 @@
         <span>资产记录（{{ c.assets.length }}）</span>
         <span class="link" @click="$router.push(`/asset/new?customerId=${c.id}`)">＋ 添加</span>
       </div>
-      <van-swipe-cell v-for="a in c.assets" :key="a.id">
+      <div v-for="a in c.assets" :key="a.id">
         <div class="card card-tight asset-row" @click="$router.push(`/asset/${a.id}/edit`)">
           <div class="row-between">
             <div class="grow">
@@ -57,13 +57,13 @@
                 <template v-if="!a.rate && !a.start_date && !a.maturity_date">—</template>
               </div>
             </div>
-            <div class="amount num" style="font-size: 15px">{{ fmtMoney(a.amount) }}</div>
+            <div class="row" style="gap: 2px">
+              <div class="amount num" style="font-size: 15px">{{ fmtMoney(a.amount) }}</div>
+              <van-icon name="delete-o" style="color: var(--ink-3); font-size: 18px; padding: 6px" @click.stop="deleteAsset(a)" />
+            </div>
           </div>
         </div>
-        <template #right>
-          <van-button square type="danger" text="删除" style="height: 100%" @click="deleteAsset(a)" />
-        </template>
-      </van-swipe-cell>
+      </div>
       <div v-if="!c.assets.length" class="empty" style="padding: 20px">暂无资产记录，可拍照识别批量导入</div>
 
       <!-- 沟通记录（对话归档），默认收起 -->

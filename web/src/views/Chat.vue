@@ -65,21 +65,8 @@
       </div>
     </div>
 
-    <!-- 语音中间态提示 -->
-    <div v-if="listening && pendingText" class="pending-bar">
-      <van-icon name="volume-o" style="color: var(--red)" /> 正在识别：{{ pendingText }}
-    </div>
-
     <!-- 输入区 -->
     <div class="input-bar">
-      <button
-        class="mic-btn"
-        :class="{ listening }"
-        :disabled="!speechOk"
-        @click="toggleMic"
-      >
-        <van-icon :name="listening ? 'pause-circle-o' : 'volume-o'" />
-      </button>
       <textarea
         ref="inputEl"
         v-model="text"
@@ -91,7 +78,6 @@
         <van-icon name="arrow-up" />
       </button>
     </div>
-    <div v-if="!speechOk" class="faint mic-hint">💡 语音速记：点击键盘上的 🎤 语音键说话，文字直接进输入框（输入法自带，不受访问方式限制）</div>
 
     <!-- 关联模式弹层 -->
     <van-action-sheet
@@ -120,7 +106,7 @@
 </template>
 
 <script setup>
-import { ref, computed, nextTick, onMounted, onBeforeUnmount } from 'vue';
+import { ref, computed, nextTick, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { showToast, showConfirmDialog, showDialog } from 'vant';
 import {
@@ -128,7 +114,6 @@ import {
 } from 'vant';
 import { api } from '../api/index.js';
 import { renderMarkdown } from '../utils/markdown.js';
-import { speechSupported, createRecognizer } from '../utils/speech.js';
 
 const messages = ref([]);
 const text = ref('');
@@ -164,40 +149,6 @@ const pickFiltered = computed(() => {
   if (!q) return customers.value;
   return customers.value.filter((c) => c.name.includes(q) || (c.phone || '').includes(q));
 });
-
-// ===== 语音 =====
-const speechOk = speechSupported();
-const listening = ref(false);
-const pendingText = ref('');
-let recognizer = null;
-
-function toggleMic() {
-  if (listening.value) {
-    recognizer?.stop();
-    return;
-  }
-  try {
-    recognizer = createRecognizer({
-      onFinal: (t) => {
-        text.value = (text.value ? text.value : '') + t;
-        pendingText.value = '';
-        nextTick(autoGrow);
-      },
-      onPartial: (t) => (pendingText.value = t),
-      onEnd: () => {
-        listening.value = false;
-        pendingText.value = '';
-      },
-      onError: (err) => {
-        showToast(err === 'not-allowed' ? '麦克风权限被拒绝，请在浏览器设置中允许' : `语音识别出错：${err}`);
-      },
-    });
-    recognizer.start();
-    listening.value = true;
-  } catch (e) {
-    showToast('无法启动语音识别');
-  }
-}
 
 function autoGrow() {
   const el = inputEl.value;
@@ -317,6 +268,8 @@ function extProduct(m) {
 
 // ===== 归档操作 =====
 function applyButtonLabel(m) {
+  const info = extInfo(m);
+  if (info?.intent === 'replace') return '🔄 更正资产（清空重录）';
   if (m.customer_id) return '📋 存入档案';
   if (m.suggest_new) return `📋 新建「${m.suggest_new}」并存入档案`;
   return '📋 存入到客户档案…';
@@ -357,7 +310,18 @@ async function applyExtracted(m) {
 }
 
 async function doApply(m, customerId) {
-  const r = await api.applyChat(m.id, { customer_id: customerId, info: extInfo(m) });
+  const info = extInfo(m);
+  if (info?.intent === 'replace') {
+    try {
+      await showConfirmDialog({
+        title: '更正资产',
+        message: '将清空该客户当前全部资产记录，按这条消息重新录入。确定继续吗？',
+      });
+    } catch {
+      return;
+    }
+  }
+  const r = await api.applyChat(m.id, { customer_id: customerId, info });
   m.applied = true;
   m.customer_id = customerId;
   m.customer_name = r.customer_name;
@@ -481,12 +445,6 @@ onMounted(async () => {
   }
   loadHistory();
 });
-
-onBeforeUnmount(() => {
-  try {
-    recognizer?.stop();
-  } catch {}
-});
 </script>
 
 <style scoped>
@@ -548,14 +506,6 @@ onBeforeUnmount(() => {
 }
 .archive-action.plain { color: var(--ink-3); background: #f0eee8; }
 .msg-meta.ai-meta { text-align: left; }
-.pending-bar {
-  margin: 0 14px 6px;
-  padding: 7px 12px;
-  background: var(--amber-soft);
-  border-radius: 10px;
-  font-size: 13px;
-  color: var(--amber);
-}
 .input-bar {
   display: flex;
   align-items: flex-end;
@@ -576,7 +526,7 @@ onBeforeUnmount(() => {
   padding: 8px 4px;
   resize: none;
 }
-.mic-btn, .send-btn {
+.send-btn {
   width: 40px;
   height: 40px;
   border-radius: 50%;
@@ -587,32 +537,10 @@ onBeforeUnmount(() => {
   font-size: 20px;
   flex-shrink: 0;
   cursor: pointer;
-}
-.mic-btn {
-  background: var(--amber-soft);
-  color: var(--amber);
-}
-.mic-btn.listening {
-  background: var(--red);
-  color: #fff;
-  animation: pulse 1.2s ease-in-out infinite;
-}
-.mic-btn:disabled { opacity: 0.35; }
-.send-btn {
   background: var(--primary);
   color: #fff;
 }
 .send-btn:disabled { opacity: 0.4; }
-.mic-hint {
-  text-align: center;
-  padding: 0 12px calc(6px + env(safe-area-inset-bottom));
-  background: #fffdf9;
-  font-size: 11.5px;
-}
-@keyframes pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.12); }
-}
 .cursor {
   display: inline-block;
   color: var(--primary);

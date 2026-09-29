@@ -50,6 +50,7 @@ ${rosterText(roster)}
 {
   "customer_id": 匹配到名单中的客户则填其数字 id，否则 null,
   "new_name": 消息明确提到的、不在名单中的客户/联系人姓名（语境是建档对象，而非泛指），否则 null,
+  "intent": "add 或 replace。add=新增资产/信息；replace=消息在更正、澄清之前说过的内容（关键词如：一共就、总共、包含、说错了、更正、重新整理、不是），此时 assets 代表该客户整改后的完整资产清单",
   "info": {
     "birthday": "生日，尽量 YYYY-MM-DD，没有年份可用 MM-DD，识别不出为空串",
     "preferences": "口味偏好/兴趣爱好/沟通习惯等简洁描述短语，没有为空串",
@@ -77,6 +78,7 @@ ${rosterText(roster)}
   }
   const rawInfo = parsed.info && typeof parsed.info === 'object' ? parsed.info : {};
   const info = {};
+  if (parsed.intent === 'replace') info.intent = 'replace';
   if (typeof rawInfo.birthday === 'string' && rawInfo.birthday.trim()) info.birthday = rawInfo.birthday.trim().slice(0, 20);
   if (typeof rawInfo.preferences === 'string' && rawInfo.preferences.trim()) info.preferences = rawInfo.preferences.trim().slice(0, 200);
   if (Array.isArray(rawInfo.tags)) {
@@ -335,6 +337,14 @@ chatRouter.post('/apply', (req, res) => {
 
   const info = body.info || {};
   const summary = [];
+  const isReplace = info.intent === 'replace' && Array.isArray(info.assets) && info.assets.length > 0;
+
+  // 更正模式：清空该客户原有资产后按新清单重录
+  let replacedCount = 0;
+  if (isReplace) {
+    const del = db.prepare('DELETE FROM assets WHERE customer_id = ?').run(customerId);
+    replacedCount = del.changes;
+  }
 
   const updates = {};
   if (info.birthday && !customer.birthday) {
@@ -360,6 +370,7 @@ chatRouter.post('/apply', (req, res) => {
     const fields = Object.keys(updates).map((k) => `${k} = @${k}`).join(', ');
     db.prepare(`UPDATE customers SET ${fields}, updated_at = datetime('now','localtime') WHERE id = @id`).run({ ...updates, id: customerId });
   }
+  if (isReplace) summary.push(`更正：已清除原 ${replacedCount} 笔资产`);
 
   let assetsAdded = 0;
   if (Array.isArray(info.assets)) {
@@ -371,7 +382,7 @@ chatRouter.post('/apply', (req, res) => {
       insert.run(customerId, a.category || '其他', String(a.product_name || '').trim(), Number(a.amount) || 0, String(a.notes || '').trim());
       assetsAdded++;
     }
-    if (assetsAdded) summary.push(`${assetsAdded} 笔资产`);
+    if (assetsAdded) summary.push(`${assetsAdded} 笔资产${isReplace ? '（重录）' : ''}`);
   }
 
   // 消息标记已应用并归档到该客户
