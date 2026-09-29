@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>客户簿 · 使用速览</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 720px;
+    background: #f6f4ef;
+    color: #1c2530;
+    font-family: -apple-system, 'PingFang SC', 'HarmonyOS Sans SC', 'Microsoft YaHei', sans-serif;
+    padding: 26px 34px 22px;
+  }
+  .header { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
+  .logo {
+    width: 56px; height: 56px; border-radius: 14px; flex-shrink: 0;
+    background: #1f3a5f; display: flex; align-items: center; justify-content: center;
+  }
+  h1 { font-size: 26px; font-weight: 800; color: #1f3a5f; letter-spacing: 0.04em; }
+  .sub { font-size: 13px; color: #98a4b0; margin-top: 3px; }
+  .card {
+    background: #fff; border: 1px solid #e8e4db; border-radius: 16px;
+    padding: 16px 20px; margin-bottom: 12px;
+  }
+  .sec { display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+  .sec-no {
+    width: 24px; height: 24px; border-radius: 8px; background: #1f3a5f; color: #f5e7c6;
+    font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center;
+  }
+  .sec-title { font-size: 17px; font-weight: 800; }
+  .sec-tag { font-size: 11.5px; color: #b45309; background: #fdf3e3; border-radius: 6px; padding: 2px 8px; font-weight: 600; }
+
+  /* 导航地图 */
+  .map-row { display: flex; gap: 10px; }
+  .map-box { flex: 1; }
+  .map-label { font-size: 12px; color: #98a4b0; margin-bottom: 8px; }
+  .nav-strip {
+    display: flex; background: #fffdf9; border: 1.5px solid #1f3a5f22; border-radius: 12px; padding: 8px 6px;
+  }
+  .nav-item { flex: 1; text-align: center; font-size: 12.5px; color: #5d6b7a; }
+  .nav-item b { display: block; font-size: 17px; margin-bottom: 2px; }
+  .nav-item.hot { color: #1f3a5f; font-weight: 700; }
+  .icon-strip { display: flex; gap: 8px; }
+  .icon-chip {
+    flex: 1; background: #fffdf9; border: 1.5px solid #e8e4db; border-radius: 12px;
+    text-align: center; padding: 9px 2px; font-size: 12px; color: #5d6b7a;
+  }
+  .icon-chip b { display: block; font-size: 16px; margin-bottom: 2px; }
+
+  /* 流程 */
+  .flow { display: flex; align-items: stretch; gap: 0; margin-bottom: 14px; }
+  .flow-step {
+    flex: 1; background: #f6f4ef; border-radius: 12px; padding: 10px 8px; text-align: center;
+    font-size: 12.5px; font-weight: 600; color: #1c2530;
+  }
+  .flow-step small { display: block; font-weight: 400; color: #98a4b0; font-size: 11px; margin-top: 2px; }
+  .flow-arrow { display: flex; align-items: center; padding: 0 6px; color: #b45309; font-weight: 800; font-size: 15px; }
+
+  /* 表格 */
+  table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  th { text-align: left; color: #98a4b0; font-weight: 600; padding: 4px 8px 8px; border-bottom: 1.5px solid #e8e4db; }
+  td { padding: 8px; border-bottom: 1px solid #f0ede6; vertical-align: top; line-height: 1.5; }
+  tr:last-child td { border-bottom: none; }
+  .say { color: #1c2530; }
+  .btn {
+    display: inline-block; background: #fdf3e3; color: #b45309; border-radius: 6px;
+    padding: 1px 7px; font-weight: 700; white-space: nowrap; font-size: 12px;
+  }
+  .auto { display: inline-block; background: #eaf5ee; color: #1b7a43; border-radius: 6px; padding: 1px 7px; font-weight: 700; font-size: 12px; }
+  .fx { color: #5d6b7a; }
+
+  .warn {
+    margin-top: 12px; background: #fdf3e3; border-radius: 10px; padding: 9px 12px;
+    font-size: 12px; color: #b45309; line-height: 1.55;
+  }
+  .duo { display: flex; gap: 10px; }
+  .duo .card { flex: 1; margin-bottom: 0; }
+  .mini-title { font-size: 14.5px; font-weight: 800; margin-bottom: 6px; }
+  .mini-desc { font-size: 12px; color: #5d6b7a; line-height: 1.65; }
+  .mini-desc b { color: #1f3a5f; }
+  .foot { text-align: center; font-size: 11.5px; color: #98a4b0; margin-top: 12px; letter-spacing: 0.08em; }
+</style>
+</head>
+<body>
+  <div class="header">
+    <div class="logo">
+      <svg width="34" height="34" viewBox="0 0 96 96"><path d="M48 20 L74 32 v10 c0 16-10.5 26-26 32-15.5-6-26-16-26-32V32 Z" fill="none" stroke="#e8c979" stroke-width="4" stroke-linejoin="round"/><path d="M38 48 l7 7 14-14" fill="none" stroke="#e8c979" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div>
+      <h1>客户簿 · 使用速览</h1>
+      <div class="sub">银行客户信息管理 · 私人工具</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="sec"><div class="sec-no">1</div><div class="sec-title">页面在哪</div></div>
+    <div class="map-row">
+      <div class="map-box">
+        <div class="map-label">底部导航（常用）</div>
+        <div class="nav-strip">
+          <div class="nav-item"><b>👥</b>客户</div>
+          <div class="nav-item"><b>📋</b>表格</div>
+          <div class="nav-item hot"><b>💬</b>对话</div>
+          <div class="nav-item"><b>📈</b>分析</div>
+        </div>
+      </div>
+      <div class="map-box" style="max-width: 300px">
+        <div class="map-label">首页右上角（偶尔用）</div>
+        <div class="icon-strip">
+          <div class="icon-chip"><b>📷</b>识别</div>
+          <div class="icon-chip"><b>🎒</b>产品库</div>
+          <div class="icon-chip"><b>⚙️</b>设置</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="sec"><div class="sec-no">2</div><div class="sec-title">动嘴记客户</div><div class="sec-tag">最常用</div></div>
+    <div class="flow">
+      <div class="flow-step">打开「对话」<small>底部导航</small></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">点输入框<small>按键盘上的 🎤 语音键</small></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">说话 · 发送<small>像发微信一样</small></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">点 AI 回答下方的按钮<small>一键入库</small></div>
+    </div>
+    <table>
+      <tr><th style="width:46%">你说的</th><th style="width:27%">出现的按钮</th><th>效果</th></tr>
+      <tr><td class="say">"拜访了张三，聊了养老话题"</td><td><span class="auto">自动归档</span></td><td class="fx">进张三的沟通记录</td></tr>
+      <tr><td class="say">"李四存款100万，5月10号生日，喜欢钓鱼"</td><td><span class="btn">📋 存入档案</span></td><td class="fx">生日/偏好/资产一次入库</td></tr>
+      <tr><td class="say">"王五买了50万基金"</td><td><span class="btn">📋 存入档案</span></td><td class="fx">记到王五名下</td></tr>
+      <tr><td class="say">提到没建档的人</td><td><span class="btn">＋新建客户</span></td><td class="fx">一键建档</td></tr>
+      <tr><td class="say">"新增产品：XX理财，R2，基准3.0%，1万起"</td><td><span class="btn">📦 存入产品库</span></td><td class="fx">话术自动引用该产品</td></tr>
+    </table>
+    <div class="warn">⚠️ 说"转出 / 赎回"的消息先别点存入（会记成新增，不会核减原资产），去客户详情手动改。</div>
+  </div>
+
+  <div class="duo">
+    <div class="card">
+      <div class="sec"><div class="sec-no">3</div><div class="sec-title">出话术</div><div class="sec-tag">分析页</div></div>
+      <div class="mini-title">营销作战卡</div>
+      <div class="mini-desc">选一个客户生成：<b>机会清单 + 照着念的话术</b>（电话/微信/面谈）+ 异议应对 + 本周节奏。自动引用产品库、检查风险匹配。</div>
+      <div class="mini-title" style="margin-top: 10px">客户雷达</div>
+      <div class="mini-desc">不用选客户，全库扫描：挖出<b>被忽视的大客户</b>、快到期的钱、转介绍线索。</div>
+    </div>
+    <div class="card">
+      <div class="sec"><div class="sec-no">4</div><div class="sec-title">偶尔用</div></div>
+      <div class="mini-desc" style="font-size: 12.5px">
+        <b>📷 识别</b>：名片拍照建客户 / 系统截图提字段 / 资产表格批量导入<br /><br />
+        <b>📋 表格</b>：全部资产筛选汇总，右上角导出 Excel<br /><br />
+        <b>👥 客户详情</b>：资料、资产、沟通记录、历史分析
+      </div>
+    </div>
+  </div>
+
+  <div class="foot">客户簿 · 让每个客户都被好好经营</div>
+</body>
+</html>
